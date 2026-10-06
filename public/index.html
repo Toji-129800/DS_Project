@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urinalysis Patient Record System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="brand-block">
+                <div class="brand-institution">Clinical Laboratories</div>
+                <h1 class="brand-title">Urinalysis Patient Record System</h1>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-tabs" aria-label="Main Navigation">
+        <div class="nav-inner">
+            <button type="button" class="tab-btn active" data-tab="tab-lookup">Patient Lookup & Entry</button>
+            <button type="button" class="tab-btn" data-tab="tab-history">Patient History</button>
+            <button type="button" class="tab-btn" data-tab="tab-trend">Trend Report</button>
+            <button type="button" class="tab-btn" data-tab="tab-queue">Clinical Review Queue <span id="queue-badge"
+                    class="badge">0</span></button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- GLOBAL STATUS BAR -->
+        <div id="status-bar" class="status-bar hidden" role="status" aria-live="polite"></div>
+
+        <!-- TAB 1: PATIENT LOOKUP & ADD RECORD (DEFAULT/HOME VIEW) -->
+        <section id="tab-lookup" class="tab-pane active">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Patient Registry Lookup</h2>
+                </div>
+                <div class="panel-body">
+                    <form id="form-lookup" class="inline-search-form">
+                        <div class="form-group inline-group">
+                            <label for="lookup-patient-id" class="form-label">Patient ID</label>
+                            <div class="search-input-wrapper">
+                                <input type="text" id="lookup-patient-id" class="input-text" placeholder="e.g. P-101"
+                                    required autocomplete="off">
+                                <button type="submit" class="btn btn-primary">Search Registry</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="lookup-preview" class="lookup-preview hidden"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Add Urinalysis Test Record</h2>
+                </div>
+                <div class="panel-body">
+                    <form id="form-add-record">
+                        <div class="meta-row">
+                            <div class="form-group">
+                                <label for="record-patient-id" class="form-label">Patient ID</label>
+                                <input type="text" id="record-patient-id" class="input-text" placeholder="e.g. P-101"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="record-timestamp" class="form-label">Collection Date / Timestamp</label>
+                                <input type="text" id="record-timestamp" class="input-text" placeholder="YYYY-MM-DD"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="analyte-grid-container">
+                            <div class="grid-section-label">Urinalysis Panel (10 Analytes)</div>
+                            <div class="analyte-grid">
+                                <div class="grid-cell">
+                                    <label for="analyte-0" class="analyte-label">1. Glucose <span
+                                            class="analyte-unit">(mmol/L)</span></label>
+                                    <input type="number" step="0.01" id="analyte-0" class="input-number"
+                                        placeholder="0.0 - 0.8" required>
+                                </div>
+                                <div class="grid-cell">
+                                    <label for="analyte-1" class="analyte-label">2. Protein <span
+                                            class="analyte-unit">(g/L)</span></label>
+                                    <input type="number" step="0.01" id="analyte-1" class="input-number"
+                                        placeholder="0.0 - 0.15" required>
+                                </div>
+                                <div class="grid-cell">
+                                    <label for="analyte-2" class="analyte-label">3. pH <span
+                                            class="analyte-unit">(pH)</span></label>
+                                    <input type="number" step="0.1" id="analyte-2" class="input-number"
+                                        placeholder="4.5 - 8.0" required>
+                                </div>
+                                <div class="grid-cell">
+                                    <label for="analyte-3" class="analyte-label">4. Ketones <span
+                                            class="analyte-unit">(mmol/L)</span></label>
+                                    <input type="number" step="0.01" id="analyte-3" class="input-number"
+                                        placeholder="0.0 - 0.5" required>
+                                </div>
+                                <div class="grid-cell">
+                                    <label for="analyte-4" class="analyte-label">5. Blood <span
+                                            class="analyte-unit">(Ery/µL)</span></label>
+                                    <input type="number" step="0.1" id="analyte-4" class="input-number"
+                                        placeholder="0.0" required>
+                                </div>
+                                <div class="grid-cell">
+                                    <label for="analyte-5" class="analyte-label">6. Bilirubin <span
+                                            class="analyte-unit">(mg/dL)</span></label>
+                                    <input type="number" step="0.01" id="analyte-5" class="input-number"
+                                        placeholder="0.0 - 0.2" required>
+                                </div>
+                                <div class="grid-cell">
+                                    <label for="analyte-6" class="analyte-label">7. Urobilinogen <span
+                                            class="analyte-unit">(mg/dL)</span></label>
+                                    <input type="number" step="0.01" id="analyte-6" class="input-number"
+                                        placeholder="0.2 - 1.0" required>
+                                </div>
+                                <div class="grid-cell">
+                                    <label for="analyte-7" class="analyte-label">8. Nitrite <span
+                                            class="analyte-unit">(0 or 1)</span></label>
+                                    <input type="number" step="1" id="analyte-7" class="input-number"
+                                        placeholder="0 = neg, 1 = pos" min="0" max="1" required>
+                                </div>
+                                <div class="grid-cell">
+                                    <label for="analyte-8" class="analyte-label">9. Leucocytes <span
+                                            class="analyte-unit">(Leu/µL)</span></label>
+                                    <input type="number" step="0.1" id="analyte-8" class="input-number"
+                                        placeholder="0.0 - 10.0" required>
+                                </div>
+                                <div class="grid-cell">
+                                    <label for="analyte-9" class="analyte-label">10. Specific Gravity <span
+                                            class="analyte-unit">(SG)</span></label>
+                                    <input type="number" step="0.001" id="analyte-9" class="input-number"
+                                        placeholder="1.005 - 1.030" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Commit Test Record</button>
+                            <button type="button" id="btn-fill-normal" class="btn btn-secondary">Fill Normal
+                                Sample</button>
+                            <button type="reset" class="btn btn-secondary">Clear Inputs</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: PATIENT HISTORY VIEW -->
+        <section id="tab-history" class="tab-pane">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Chronological Test Record History</h2>
+                        <span id="history-patient-caption" class="panel-subtitle">Select or lookup a patient to view
+                            test record chain</span>
+                    </div>
+                    <div class="history-controls">
+                        <form id="form-date-search" class="date-search-form">
+                            <label for="search-date-input" class="form-label inline-label">Search Date (O(m)):</label>
+                            <input type="text" id="search-date-input" class="input-text input-compact"
+                                placeholder="YYYY-MM-DD">
+                            <button type="submit" class="btn btn-secondary btn-compact">Find</button>
+                            <button type="button" id="btn-reset-date-filter" class="btn btn-secondary btn-compact">Show
+                                All</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="action-row">
+                        <div class="action-left">
+                            <span class="patient-tag" id="current-patient-tag">Patient: None</span>
+                            <span class="records-tag" id="current-records-tag">Total Visits: 0</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="button" id="btn-archive-oldest" class="btn btn-secondary" disabled>Archive
+                                Oldest Record</button>
+                            <button type="button" id="btn-goto-trend" class="btn btn-primary" disabled>View Trend
+                                Analysis</button>
+                        </div>
+                    </div>
+
+                    <div id="history-table-wrapper" class="table-container">
+                        <div class="empty-state">No patient selected. Look up a patient above or enter a Patient ID.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: TREND REPORT VIEW -->
+        <section id="tab-trend" class="tab-pane">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Analyte Trend & Escalation Analysis</h2>
+                    <span class="panel-subtitle">O(m) Sequential Traversal · Escalates to Review Queue when Out-of-Range
+                        &ge; 3</span>
+                </div>
+                <div class="panel-body">
+                    <form id="form-trend" class="trend-config-form">
+                        <div class="trend-inputs-grid">
+                            <div class="form-group">
+                                <label for="trend-patient-id" class="form-label">Patient ID</label>
+                                <input type="text" id="trend-patient-id" class="input-text" placeholder="e.g. P-101"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="trend-analyte-select" class="form-label">Analyte</label>
+                                <select id="trend-analyte-select" class="input-select" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="trend-low-range" class="form-label">Normal Range Min (Low)</label>
+                                <input type="number" step="0.001" id="trend-low-range" class="input-number" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="trend-high-range" class="form-label">Normal Range Max (High)</label>
+                                <input type="number" step="0.001" id="trend-high-range" class="input-number" required>
+                            </div>
+                            <div class="form-group form-group-action">
+                                <button type="submit" class="btn btn-primary btn-full">Generate Trend</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div id="trend-results" class="trend-results-container hidden">
+                        <div class="chart-wrapper">
+                            <div class="chart-header">
+                                <span class="chart-title" id="chart-title-text">Analyte Longitudinal Trajectory</span>
+                                <div class="chart-legend">
+                                    <span class="legend-item"><span class="legend-swatch normal-swatch"></span> Normal
+                                        Point</span>
+                                    <span class="legend-item"><span class="legend-swatch warning-swatch"></span>
+                                        Out-of-Range Point</span>
+                                    <span class="legend-item"><span class="legend-line"></span> Reference Limits</span>
+                                </div>
+                            </div>
+                            <div id="chart-svg-container" class="svg-host"></div>
+                        </div>
+
+                        <!-- One-line verdict with colored dot indicator -->
+                        <div class="verdict-line" id="trend-verdict-line">
+                            <span class="verdict-dot" id="verdict-dot"></span>
+                            <span class="verdict-label">Status:</span>
+                            <span class="verdict-text" id="verdict-text">Pending calculation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: CLINICAL REVIEW QUEUE -->
+        <section id="tab-queue" class="tab-pane">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Clinical Review Queue</h2>
+                        <span class="panel-subtitle">FIFO Linked List (front &amp; rear pointers) · O(1) Dequeue /
+                            Enqueue</span>
+                    </div>
+                    <button type="button" id="btn-process-next" class="btn btn-primary">Process Next</button>
+                </div>
+                <div class="panel-body">
+                    <div id="dequeue-notification" class="notice-box hidden"></div>
+
+                    <div class="queue-meta-bar">
+                        <span class="queue-heading">Awaiting Physician Review</span>
+                        <span id="queue-length-indicator" class="queue-count-text">0 patients pending</span>
+                    </div>
+
+                    <div id="queue-list-container" class="queue-container">
+                        <ol id="queue-ordered-list" class="queue-list"></ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-inner">
+            <span>Clinical Laboratories</span>
+            <span>HashTable (TABLE_SIZE 101) &bull; PatientList (Tail Pointer) &bull; ReviewQueue (FIFO)</span>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

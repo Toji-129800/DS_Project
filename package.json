@@ -1,0 +1,12 @@
+{
+  "name": "urinalysis-patient-record-system",
+  "version": "1.0.0",
+  "description": "Hospital urinalysis patient-record system demonstrating explicit hash table, linked list, and FIFO queue data structures",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
