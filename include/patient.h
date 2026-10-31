@@ -32,7 +32,6 @@ typedef struct {
 /* Standard display labels for each analyte in the required order */
 extern const char *const ANALYTE_NAMES[NUM_ANALYTES];
 
-/* Required Core Functions */
 unsigned int hashID(const char *patientID);
 PatientList *findOrCreatePatient(const char *patientID);
 void insertTestRecord(const char *patientID, const char *timestamp, 
@@ -46,4 +45,4 @@ void enqueueForReview(const char *patientID);
 char *dequeueNextReview(void);
 void freeAll(void);
 
-#endif /* PATIENT_H */
+#endif
