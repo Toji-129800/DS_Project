@@ -32,9 +32,7 @@ const STORAGE_FILE = path.join(__dirname, 'records_storage.json');
 const hashTable = new HashTable();
 const reviewQueue = new ReviewQueue();
 
-// -------------------------------------------------------------
 // Data Persistence Layer (File-backed storage)
-// -------------------------------------------------------------
 function saveStateToFile() {
     try {
         const patients = [];
@@ -115,9 +113,7 @@ loadStateFromFile();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
-// -------------------------------------------------------------
 // Metadata & Reference Endpoints
-// -------------------------------------------------------------
 app.get('/api/analytes', (req, res) => {
     res.json({
         numAnalytes: NUM_ANALYTES,
@@ -125,11 +121,9 @@ app.get('/api/analytes', (req, res) => {
     });
 });
 
-// -------------------------------------------------------------
 // POST /api/records
 // Body: { patientID, timestamp, values: number[10] }
 // Time Complexity: O(1) average
-// -------------------------------------------------------------
 app.post('/api/records', (req, res) => {
     const { patientID, timestamp, values } = req.body;
 
@@ -165,10 +159,8 @@ app.post('/api/records', (req, res) => {
     });
 });
 
-// -------------------------------------------------------------
 // GET /api/patients/:id/search?date=YYYY-MM-DD
 // Time Complexity: O(m) where m is patient record count
-// -------------------------------------------------------------
 app.get('/api/patients/:id/search', (req, res) => {
     const patientID = req.params.id;
     const { date } = req.query;
@@ -191,10 +183,8 @@ app.get('/api/patients/:id/search', (req, res) => {
     });
 });
 
-// -------------------------------------------------------------
 // GET /api/patients/:id/trend?analyteIndex=&low=&high=
 // Time Complexity: O(m) traversal; enqueues into ReviewQueue if outOfRangeCount >= 3
-// -------------------------------------------------------------
 app.get('/api/patients/:id/trend', (req, res) => {
     const patientID = req.params.id;
     const analyteIndex = parseInt(req.query.analyteIndex, 10);
@@ -234,10 +224,8 @@ app.get('/api/patients/:id/trend', (req, res) => {
     return res.json(report);
 });
 
-// -------------------------------------------------------------
 // DELETE /api/patients/:id/oldest
 // Time Complexity: O(1) average
-// -------------------------------------------------------------
 app.delete('/api/patients/:id/oldest', (req, res) => {
     const patientID = req.params.id;
     const patient = hashTable.searchPatient(patientID);
@@ -260,10 +248,8 @@ app.delete('/api/patients/:id/oldest', (req, res) => {
     });
 });
 
-// -------------------------------------------------------------
 // GET /api/patients/:id
 // Time Complexity: O(1) average lookup + O(m) list traversal
-// -------------------------------------------------------------
 app.get('/api/patients/:id', (req, res) => {
     const patientID = req.params.id;
     const patient = hashTable.searchPatient(patientID);
@@ -281,11 +267,9 @@ app.get('/api/patients/:id', (req, res) => {
     });
 });
 
-// -------------------------------------------------------------
 // GET /api/review/next
 // Dequeues next patient from FIFO Review Queue
 // Time Complexity: O(1)
-// -------------------------------------------------------------
 app.get('/api/review/next', (req, res) => {
     const dequeuedID = reviewQueue.dequeue();
     saveStateToFile();
@@ -295,11 +279,9 @@ app.get('/api/review/next', (req, res) => {
     });
 });
 
-// -------------------------------------------------------------
 // GET /api/review/queue
 // Returns current queue snapshot
 // Time Complexity: O(q)
-// -------------------------------------------------------------
 app.get('/api/review/queue', (req, res) => {
     return res.json({
         count: reviewQueue.count,
@@ -307,10 +289,8 @@ app.get('/api/review/queue', (req, res) => {
     });
 });
 
-// -------------------------------------------------------------
 // POST /api/seed
 // Pre-loads realistic demo records to test all system features
-// -------------------------------------------------------------
 app.post('/api/seed', (req, res) => {
     seedInitialData();
     return res.json({
